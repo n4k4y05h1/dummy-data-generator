@@ -1,8 +1,10 @@
 
 import { useEffect, useRef } from 'react';
+import { OutputFormat } from '../../types/schema';
 
 interface DataPreviewProps {
   data: string;
+  format: OutputFormat;
 }
 
 export function DataPreview({ data }: DataPreviewProps) {

@@ -142,7 +142,7 @@ export function DataTypeForm({ fields, onUpdate, parentId }: DataTypeFormProps) 
                             <select
                               className="p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                               value={typeof field.options?.ipVersion === 'string' ? field.options.ipVersion : 'IPv4'}
-                              onChange={e => updateField(field.id, { options: { ...field.options, ipVersion: e.target.value } })}
+                              onChange={e => updateField(field.id, { options: { ...field.options, ipVersion: e.target.value as 'IPv4' | 'IPv6' } })}
                             >
                               <option value="IPv4">IPv4</option>
                               <option value="IPv6">IPv6</option>
@@ -234,7 +234,7 @@ export function DataTypeForm({ fields, onUpdate, parentId }: DataTypeFormProps) 
                                 <select
                                   className="p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                                   value={typeof field.options?.ipVersion === 'string' ? field.options.ipVersion : 'IPv4'}
-                                  onChange={e => updateField(field.id, { options: { ...field.options, ipVersion: e.target.value } })}
+                                  onChange={e => updateField(field.id, { options: { ...field.options, ipVersion: e.target.value as 'IPv4' | 'IPv6' } })}
                                 >
                                   <option value="IPv4">IPv4</option>
                                   <option value="IPv6">IPv6</option>
