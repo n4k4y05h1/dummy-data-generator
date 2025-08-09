@@ -2,6 +2,10 @@
 
 様々な形式のダミーデータを生成するWebアプリケーションです。テスト用データや開発用のサンプルデータを簡単に作成できます。
 
+##  Demo
+
+Visit the live application: https://dummy-data-generator.pages.dev/
+
 ## 機能
 
 ### データ型
@@ -51,7 +55,7 @@
 
 ```bash
 # リポジトリのクローン
-git clone [repository-url]
+git clone https://github.com/n4k4y05h1/dummy-data-generator
 cd dummy-generator
 
 # 依存関係のインストール
