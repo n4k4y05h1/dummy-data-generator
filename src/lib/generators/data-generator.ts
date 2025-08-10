@@ -100,10 +100,12 @@ export function generateFieldValue(
       if (!field.fields) return {};
       return generateDataSet(field.fields, 1, language)[0];
     case 'array':
-      if (!field.itemType) return [];
+      if (!field.itemDefinition) {
+        return [];
+      }
       const arrayLength = typeof field.options?.arrayLength === 'number' ? field.options.arrayLength : 1;
       return Array.from({ length: arrayLength }, () =>
-        generateFieldValue({ id: 'array-item-id', name: '', type: field.itemType!, options: field.options }, fakerLib, language)
+        generateFieldValue(field.itemDefinition!, fakerLib, language)
       );
     default:
       return '';

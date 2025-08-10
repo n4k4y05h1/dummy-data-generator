@@ -25,13 +25,15 @@ export interface FieldDefinition {
   id: string;
   name: string;
   type: DataType;
-  options?: Record<string, unknown> & {
+  options?: {
+    arrayLength?: number;
     ipVersion?: 'IPv4' | 'IPv6';
     latLongType?: 'latitude' | 'longitude' | 'both';
     currencyType?: 'yen' | 'dollar';
+    [key: string]: unknown;
   };
   fields?: FieldDefinition[]; // For type 'object'
-  itemType?: DataType; // For type 'array'
+  itemDefinition?: FieldDefinition; // For type 'array'
 }
 
 export interface DataSetDefinition {

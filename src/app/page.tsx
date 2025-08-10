@@ -7,10 +7,49 @@ import { formatOutput } from '../lib/formatters/data-formatter';
 import { DataTypeForm } from '../components/forms/DataTypeForm';
 import { DataPreview } from '../components/preview/DataPreview';
 import { GeneratorOptionsForm } from '../components/forms/GeneratorOptionsForm';
-import FileDropzone from '../components/forms/FileDropzone'; // Import FileDropzone
+import FileDropzone from '../components/forms/FileDropzone';
 import { Clipboard, Download } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { getTranslation } from '@/lib/i18n';
+
+// Helper to infer data type from a value
+const inferDataType = (value: unknown): DataType => {
+  if (typeof value === 'string') return 'string';
+  if (typeof value === 'number') return 'number';
+  if (typeof value === 'boolean') return 'boolean';
+  if (Array.isArray(value)) return 'array';
+  if (typeof value === 'object' && value !== null) return 'object';
+  return 'string'; // Default or unknown type
+};
+
+// Recursively creates a single FieldDefinition from a key-value pair
+const createFieldDefinition = (key: string, value: unknown): FieldDefinition => {
+  const type = inferDataType(value);
+  const field: FieldDefinition = {
+    id: `${key}-${crypto.randomUUID()}`,
+    name: key,
+    type: type,
+  };
+
+  if (type === 'object' && typeof value === 'object' && value !== null) {
+    field.fields = extractSchemaFromObject(value as Record<string, unknown>);
+  } else if (type === 'array' && Array.isArray(value)) {
+    field.options = { arrayLength: value.length };
+    if (value.length > 0) {
+      // Create itemDefinition from the first element of the array
+      field.itemDefinition = createFieldDefinition('item', value[0]);
+    }
+  }
+
+  return field;
+};
+
+// Extracts a schema (array of FieldDefinitions) from an object
+const extractSchemaFromObject = (data: Record<string, unknown>): FieldDefinition[] => {
+  return Object.entries(data).map(([key, value]) => {
+    return createFieldDefinition(key, value);
+  });
+};
 
 export default function Page() {
   const { language } = useLanguage();
@@ -21,74 +60,36 @@ export default function Page() {
   const [format, setFormat] = useState<OutputFormat>('json');
   const [options, setOptions] = useState<GeneratorOptions>({
     itemCount: 5,
-    language: language, // Use language from context
+    language: language,
   });
   const [generatedData, setGeneratedData] = useState<string>('');
 
-  // Update options.language when context language changes
   useEffect(() => {
     setOptions(prevOptions => ({ ...prevOptions, language }));
   }, [language]);
 
-  // 初期表示時にデフォルトデータを自動生成
   useEffect(() => {
     const data = generateData(fields, options);
     const formatted = formatOutput(data, format);
     setGeneratedData(formatted);
-    
-  }, [fields, options, format]); // Add options and format to dependencies
+  }, [fields, options, format]);
 
   const handleFieldUpdate = (fields: FieldDefinition[]) => {
     setFields(fields);
   };
 
-  const inferDataType = (value: unknown): DataType => {
-    if (typeof value === 'string') return 'string';
-    if (typeof value === 'number') return 'number';
-    if (typeof value === 'boolean') return 'boolean';
-    if (Array.isArray(value)) return 'array';
-    if (typeof value === 'object' && value !== null) return 'object';
-    return 'string'; // Default or unknown type
-  };
-
-  const extractSchema = (data: Record<string, unknown>): FieldDefinition[] => {
-    return Object.entries(data).map(([key, value]) => {
-      const type = inferDataType(value);
-      const field: FieldDefinition = {
-        id: `${key}-${Date.now()}`, // Simple unique ID
-        name: key,
-        type: type,
-      };
-
-      if (type === 'object' && value !== null) {
-        field.fields = extractSchema(value as Record<string, unknown>);
-      } else if (type === 'array' && Array.isArray(value) && value.length > 0) {
-        // Try to infer item type from the first element
-        field.itemType = inferDataType(value[0]);
-        // If array of objects, recursively extract schema for items
-        if (field.itemType === 'object' && value[0] !== null) {
-          field.fields = extractSchema(value[0] as Record<string, unknown>);
-        }
-      }
-      return field;
-    });
-  };
-
   const handleFileParsed = (parsedData: unknown) => {
     if (typeof parsedData === 'object' && parsedData !== null) {
-      // If the parsed data is an array, take the first element to infer schema
       const dataToInfer = Array.isArray(parsedData) && parsedData.length > 0 ? parsedData[0] : parsedData;
       
       if (typeof dataToInfer === 'object' && dataToInfer !== null) {
-        const newFields = extractSchema(dataToInfer as Record<string, unknown>);
+        const newFields = extractSchemaFromObject(dataToInfer as Record<string, unknown>);
         setFields(newFields);
       } else {
         console.error('Parsed data is not an object or array of objects:', parsedData);
-        // Optionally, set an error state or clear fields
       }
     } else {
       console.error('Parsed data is not a valid object for schema inference:', parsedData);
-      // Optionally, set an error state or clear fields
     }
   };
 
