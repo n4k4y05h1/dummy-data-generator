@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import { Trash2 } from 'lucide-react';
 import { GripVertical } from 'lucide-react';
-import { DataType, FieldDefinition } from '@/types/schema';
+import { FieldDefinition } from '@/types/schema';
 import { DataTypeSelect } from './DataTypeSelect';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { DropResult } from '@hello-pangea/dnd';

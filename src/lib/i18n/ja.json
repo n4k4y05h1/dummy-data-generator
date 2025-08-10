@@ -1,5 +1,6 @@
 {
   "app_title": "ダミーデータジェネレーター",
+  "upload_data_definition": "データ定義をアップロード",
   "data_definition": "データ定義",
   "field_name": "フィールド名",
   "data_type": "データ型",

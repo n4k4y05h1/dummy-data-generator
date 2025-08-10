@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FieldDefinition, GeneratorOptions, OutputFormat } from '../types/schema';
+import { FieldDefinition, GeneratorOptions, OutputFormat, DataType } from '../types/schema';
 import { generateData } from '../lib/generators/data-generator';
 import { formatOutput } from '../lib/formatters/data-formatter';
 import { DataTypeForm } from '../components/forms/DataTypeForm';
 import { DataPreview } from '../components/preview/DataPreview';
 import { GeneratorOptionsForm } from '../components/forms/GeneratorOptionsForm';
+import FileDropzone from '../components/forms/FileDropzone'; // Import FileDropzone
 import { Clipboard, Download } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { getTranslation } from '@/lib/i18n';
@@ -41,10 +42,64 @@ export default function Page() {
     setFields(fields);
   };
 
+  const inferDataType = (value: unknown): DataType => {
+    if (typeof value === 'string') return 'string';
+    if (typeof value === 'number') return 'number';
+    if (typeof value === 'boolean') return 'boolean';
+    if (Array.isArray(value)) return 'array';
+    if (typeof value === 'object' && value !== null) return 'object';
+    return 'string'; // Default or unknown type
+  };
+
+  const extractSchema = (data: Record<string, unknown>): FieldDefinition[] => {
+    return Object.entries(data).map(([key, value]) => {
+      const type = inferDataType(value);
+      const field: FieldDefinition = {
+        id: `${key}-${Date.now()}`, // Simple unique ID
+        name: key,
+        type: type,
+      };
+
+      if (type === 'object' && value !== null) {
+        field.fields = extractSchema(value as Record<string, unknown>);
+      } else if (type === 'array' && Array.isArray(value) && value.length > 0) {
+        // Try to infer item type from the first element
+        field.itemType = inferDataType(value[0]);
+        // If array of objects, recursively extract schema for items
+        if (field.itemType === 'object' && value[0] !== null) {
+          field.fields = extractSchema(value[0] as Record<string, unknown>);
+        }
+      }
+      return field;
+    });
+  };
+
+  const handleFileParsed = (parsedData: unknown) => {
+    if (typeof parsedData === 'object' && parsedData !== null) {
+      // If the parsed data is an array, take the first element to infer schema
+      const dataToInfer = Array.isArray(parsedData) && parsedData.length > 0 ? parsedData[0] : parsedData;
+      
+      if (typeof dataToInfer === 'object' && dataToInfer !== null) {
+        const newFields = extractSchema(dataToInfer as Record<string, unknown>);
+        setFields(newFields);
+      } else {
+        console.error('Parsed data is not an object or array of objects:', parsedData);
+        // Optionally, set an error state or clear fields
+      }
+    } else {
+      console.error('Parsed data is not a valid object for schema inference:', parsedData);
+      // Optionally, set an error state or clear fields
+    }
+  };
+
   return (
     <main className="container mx-auto p-4">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-4">
         <div className="space-y-4">
+          <div className="bg-white p-4 rounded-lg shadow">
+            <h2 className="text-xl font-bold mb-4">{getTranslation(language, 'upload_data_definition')}</h2>
+            <FileDropzone onFileParsed={handleFileParsed} />
+          </div>
           <div className="bg-white p-4 rounded-lg shadow">
             <h2 className="text-xl font-bold mb-4">{getTranslation(language, 'data_definition')}</h2>
             <DataTypeForm fields={fields} onUpdate={handleFieldUpdate} />

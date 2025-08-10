@@ -1,5 +1,6 @@
 {
   "app_title": "Dummy Data Generator",
+  "upload_data_definition": "Upload Data Definition",
   "data_definition": "Data Definition",
   "field_name": "Field Name",
   "data_type": "Data Type",
