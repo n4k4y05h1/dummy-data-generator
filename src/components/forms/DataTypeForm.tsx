@@ -68,7 +68,8 @@ export function DataTypeForm({ fields, onUpdate, parentId, isItemDefinition }: D
 
   const droppableId = parentId ? `fields-droppable-${parentId}` : "fields-droppable";
 
-  const optionWrapperClass = `mt-1 p-2 border rounded space-y-2 ${isItemDefinition ? 'ml-0' : 'ml-8'} bg-gray-50`;
+  // Consistent wrapper class for all options
+  const optionWrapperClass = `mt-1 p-2 border rounded space-y-2 ml-8 bg-gray-50`;
   const optionGridClass = "grid grid-cols-[auto_1fr] items-center gap-4";
 
   return (
