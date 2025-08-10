@@ -10,10 +10,10 @@ Visit the live application: https://dummy-data-generator.pages.dev/
 
 ### データ型
 
-- **基本型**: 文字列、数値、真偽値、日付
+- **基本型**: 文字列、数値、真偽値、日付、オブジェクト、配列
 - **個人情報**: 氏名、メール、電話番号、住所
 - **ビジネス**: 会社名、部署、売上、商品コード、通貨
-- **技術**: IPアドレス（IPv4/IPv6）、URL、色
+- **技術**: IPアドレス（IPv4/IPv6）、URL、カラーコード
 - **地理**: 緯度経度
 - **その他**: クレジットカード番号、パーセンテージ
 
@@ -35,6 +35,8 @@ Visit the live application: https://dummy-data-generator.pages.dev/
 - クリップボードコピー
 - ファイルダウンロード
 - レスポンシブデザイン
+- ファイルアップロード: JSONまたはYAMLファイルをドラッグ＆ドロップすると、そのファイル構造を解析して自動的にデータ定義を生成
+- 言語の自動検出: ブラウザの言語設定を読み取り、自動的に表示言語を切り替え
 
 ## 技術スタック
 
@@ -42,8 +44,8 @@ Visit the live application: https://dummy-data-generator.pages.dev/
 - **言語**: TypeScript
 - **UI**: React 19.1.0, Tailwind CSS, shadcn/ui
 - **データ生成**: Faker.js
+- **データ解析・操作**: Papa Parse, js-yaml, react-dropzone, @hello-pangea/dnd   
 - **アイコン**: Lucide React, Heroicons
-- **データ解析**: Papa Parse, js-yaml
 
 ## セットアップ
 
@@ -88,6 +90,7 @@ bun dev
    - フィールド名を入力
    - データ型を選択
    - 必要に応じてオプションを設定
+   - JSON/YAMLファイルをドラッグ＆ドロップして定義をインポートすることも可能です
 
 2. **生成オプション**: 
    - データ件数を指定（デフォルト: 5件）
