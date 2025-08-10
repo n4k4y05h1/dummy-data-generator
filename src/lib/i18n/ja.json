@@ -1,5 +1,5 @@
 {
-  "app_title": "ダミーデータジェネレーター",
+  "app_title": "Dummy Data Generator",
   "upload_data_definition": "データ定義をアップロード",
   "data_definition": "データ定義",
   "field_name": "フィールド名",
@@ -13,7 +13,7 @@
   "data_count": "データ数",
   "generate_data": "データ生成",
   "dummy_data": "Preview",
-  "copy": "コピー",
+  "copy": "クリップボードにコピー",
   "download": "ダウンロード",
   "remove": "削除",
 
