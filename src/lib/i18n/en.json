@@ -56,5 +56,13 @@
   "lat_long_both": "Latitude/Longitude",
 
   "yen": "Yen",
-  "dollar": "Dollar"
+  "dollar": "Dollar",
+
+  "file_dropzone_only_json_yaml": "Please drop only JSON or YAML files.",
+  "file_dropzone_unsupported_format": "Unsupported file format. Only JSON or YAML files are allowed.",
+  "file_dropzone_parse_error": "Error parsing file: ",
+  "file_dropzone_unknown_parse_error": "Unknown error occurred while parsing file.",
+  "file_dropzone_read_error": "Error reading file.",
+  "file_dropzone_drag_drop_prompt": "Drag and drop JSON or YAML files here, or click to select files.",
+  "file_dropzone_drop_here": "Drop files here..."
 }
