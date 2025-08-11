@@ -22,6 +22,9 @@ export default function RootLayout({
         <LanguageProvider>
           <Header />
           {children}
+          <footer style={{ textAlign: 'center', padding: '20px', marginTop: '40px', borderTop: '1px solid #eee', color: '#777' }}>
+            <a href="/licenses" style={{ color: '#777', textDecoration: 'none' }}>Licenses</a>
+          </footer>
         </LanguageProvider>
       </body>
     </html>
